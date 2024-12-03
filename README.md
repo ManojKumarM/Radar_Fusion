@@ -1,4 +1,6 @@
 Steps to find XYZ coordinates for a Milli-meter wave RADAR data:
+**Radar Used : Infineon BGT60TR13C**
+
 1. Data Collection(100 frames,128 chirps(0.5msec/chirp),64 samples,1 Tx,3 Rx,Total duration = 10sec)
 2. Range FFT -> 1D-FFT
 3. Velocity FFT -> 2D-FFT
