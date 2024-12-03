@@ -1,7 +1,7 @@
 clc;
 clearvars;
 close all;
-load("C:\MKM\TI\TI_Data\data2.mat");
+load(".....path to radar data....");
 %% 
 % c1 = [];c2 = [];c3 = [];
 
@@ -17,29 +17,18 @@ for receiver = 1:3
         for j = 1:128
             skibidi = fft_result(j, :); 
             skibidi(1) = 0;
-            % for as = 2:63
-            %     skibidi(as-1) = (skibidi(as-1)+skibidi(as+1)) - (2*skibidi(as));
-            % end
             modified_fft_result(j, :) = skibidi; 
         end
-        % b = [b; modified_fft_result];
        
-% scaled_fft2d=abs(modified_fft_result);
-% [cfar_output,cfar_output_cmplx] = CFAR(scaled_fft2d,modified_fft_result);
 
         %  2D FFT
-        % modified_fft_result_2d = fft(modified_fft_result, [], 1);
         for k=1:64
                     modified_fft_result_2d(:,k) = fft(modified_fft_result(:,k),128);
         end
-        % modified_fft_result_2d_final = modified_fft_result_2d;
 
         scaled_fft2d=abs(modified_fft_result_2d);
         [cfar_output,cfar_output_cmplx] = CACFAR(scaled_fft2d,modified_fft_result_2d);
         modified_fft_result_2d_final = cfar_output_cmplx;
-
-        % cfar_output=CACFAR(modified_fft_result_2d);
-        % modified_fft_result_2d_final = cfar_output;
         % 
         for x = 1:128
             s = modified_fft_result_2d_final(x, :);
@@ -53,13 +42,6 @@ for receiver = 1:3
 
         c = [c; modified_fft_result_2d_final];
     end
-    % if receiver == 1
-    %     b1 = b;
-    % elseif receiver == 2
-    %     b2 = b;
-    % elseif receiver == 3
-    %     b3 = b;
-    % end
     
     if receiver == 1
         c11 = c;
@@ -152,7 +134,6 @@ grid on;
 xlabel('X (cm)');
 ylabel('Y (cm)');
 zlabel('Z (cm)');
-% axis([0 150 -100 100 -40 40]);
 axis([-100 100 0 150 -40 40]);
 title('3D Point Cloud Animation - Frame-wise (128 chirps per frame)');
 % view(11,37);
@@ -201,21 +182,6 @@ mean_r1=[mean_r1;mean_r];
      cent_z = mean_r * sin(mean_el);
      xx=[xx;cent_x];yy=[yy;cent_y];zz=[zz;cent_z];
 
-        % [r_range,c_range]=max(max(range_data1));
-        % [r_az,c_az]=max(max(azimuth_data1));
-        % [r_el,c_el]=max(max(elevation_data1));
-
-        % cent_x = r_range * cos(r_az) * sin(r_el);
-        % cent_y = r_range * sin(r_el) * sin(r_az);
-        % cent_z = r_range * cos(r_el);
-
-%         std_x=std(std(range_data1));
-%         std_y=std(std(azimuth_data1));
-%         std_z=std(std(elevation_data1));
-% std_x1 = ceil(std_x * cos(std_y) * sin(std_z));
-% std_y1 = ceil(std_x * sin(std_z) * sin(std_y));
-% std_z1 = ceil(std_x * cos(std_z));
-
 % for i = 1:size(range_data, 1)
 for x = 1:128
     for y = 1:32
@@ -232,7 +198,6 @@ for x = 1:128
             std_x=ceil(std(x_coords(x_coords~=0)));
              std_y=ceil(std(y_coords(y_coords~=0)));
               std_z=ceil(std(z_coords(z_coords~=0)));
-              % if ((cent_x-0.5*std_x)<x_coords(x, y) && x_coords(x, y)<(cent_x+0.5*std_x)) || ((cent_y-0.5*std_y)<y_coords(x, y) && y_coords(x, y)<(cent_y+0.5*std_y)) || ((cent_z-0.5*std_z)<z_coords(x, y) && z_coords(x, y)<(cent_z+0.5*std_z))
             if ((cent_x-std_x)<x_coords(x, y) && x_coords(x, y)<(cent_x+std_x)) || ((cent_y-std_y)<y_coords(x, y) && y_coords(x, y)<(cent_y+std_y)) || ((cent_z-std_z)<z_coords(x, y) && z_coords(x, y)<(cent_z+std_z))
                 fx=[fx,x_coords(x, y)];
                 fy=[fy,y_coords(x, y)];
@@ -243,10 +208,6 @@ for x = 1:128
 end
 
     for j = max(1, i-trail_length):i
-        
-        % frame_x = x_coords(frame_start:frame_end, :);
-        % frame_y = y_coords(frame_start:frame_end, :);
-        % frame_z = z_coords(frame_start:frame_end, :);
       
         frame_x = fx(:);
         frame_y = fy(:);
@@ -267,8 +228,6 @@ end
     drawnow;
     pause(0.3);  
 end
-
-xyz=[xx,yy,zz];
 
 figure;plot(xx);title("X");
 figure;plot(yy);title("Y");
